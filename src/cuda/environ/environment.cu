@@ -1,4 +1,4 @@
-#include "environment.h"
+#include <environ/environment.h>
 
 #include <curand.h>
 #include <fstream>
@@ -36,7 +36,7 @@ environment::environment(int seed_val, int num_biotic_variables, int num_abiotic
 
 	// Allocate abiotic data vectors
 	abiotic_variables = new thrust::device_vector<float>[nabiotic_vars];
-	
+
 	for (int i=0; i < nabiotic_vars; i++)
 		{
 		abiotic_variables[i].resize(ndemes);
@@ -46,6 +46,66 @@ environment::environment(int seed_val, int num_biotic_variables, int num_abiotic
 	curandCreateGenerator(&gen, CURAND_RNG_PSEUDO_DEFAULT);
 	curandSetPseudoRandomGeneratorSeed(gen, seed);
 	}
+
+void environment::initialize_abiotic_variables(const char *filename)
+        {
+        Config cfg;
+        try
+                {
+                cfg.readFile(filename);
+                }
+        catch(const FileIOException &fioex)
+                {
+                std::cerr << "No environmental config file available" << std::endl;
+                }
+	catch(const ParseException &pex)
+		{
+		std::cerr << "Your " << pex.getFile() << " file is incorrectly specified. Make sure you check on or about line: " << pex.getLine() << " - " << pex.getError() << std::endl;
+		}
+
+
+        const Setting &root = cfg.getRoot();
+
+        const Setting &abiotic_variable_specification = root["abiotic_variable_names"];
+
+        int lenVal = abiotic_variable_specification.getLength();
+
+        abiotic_variable_names.resize(lenVal);
+
+        for (int i=0; i < lenVal; i++)
+                {
+                abiotic_variable_names[i] = abiotic_variable_specification[i].c_str();
+                }
+
+        // Read in the values for each abiotic variable
+
+        const Setting &abiotic_variable_values = root["abiotic_variables"] ;
+
+        abiotic_variables = new thrust::device_vector<float>[nabiotic_vars];
+
+        for (int i=0; i < nabiotic_vars; i++)
+                {
+                abiotic_variables[i].resize(ndemes);
+                }
+
+        for (int i=0; i < nabiotic_vars; i++)
+                {
+                for (int j=0; j < ndemes; j++)
+                        {
+                        const Setting &deme_values = abiotic_variable_values[j];
+                        float val = 0;
+                        deme_values.lookupValue(abiotic_variable_names[i], val);
+                        abiotic_variables[i][j] = val;
+                        }
+                }
+
+        // specify the indices associated with each abiotic variable's name:
+
+        for (int i=0; i < nabiotic_vars; i++)
+                {
+                abiotic_variable_indices[abiotic_variable_names[i]] = i;
+                }
+        }
 
 thrust::device_ptr<float> environment::get_abiotic_vector_ptr(const char *abiotic_variable_name)
 	{

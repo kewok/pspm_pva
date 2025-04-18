@@ -1,15 +1,10 @@
-# In addition to these header files, you will need to add the header file for the species you are simulating, e.g., 
-# -I./header/species/my_species
-HEADERS = -I./header -I./header/environ -I./header/math -I./header/species -I./header/util -I./header/species/add_kids -I./header/species/movement -I./header/species/update
+HEADERS = -I./header
 
-# Potentially add optimization instructions: e.g., to optimize on SM_3.0 GPU architecture
-CFLAGS = -O3 
-CFLAGS += -arch=sm_30
+CFLAGS = -Xcompiler
+CFLAGS += -O3
 
-# Aliases for directories; you can potentially add more here if you have further directories, e.g.,
-# MY_SPECIES = ${SPECIES}/my_species
 SRC = ./src
-CUDA = ${SRC}/cuda
+CUDA = ./src/cuda
 SPECIES = ${CUDA}/species
 MATH = ${CUDA}/math
 ENVIRON = ${CUDA}/environ
@@ -17,40 +12,28 @@ ADD_KIDS = ${SPECIES}/add_kids
 UPDATE = ${SPECIES}/update
 MOVEMENT = ${SPECIES}/movement
 UTIL = ${CUDA}/util
+
 OBJDIR = objdir
 
 all: $(OBJDIR) a.out
 
-# The location of your cuda libraries. Customize based on your system specific configuration.
 export LD_LIBRARY_PATH=/usr/local/lib /usr/local/cuda/lib
 
-# Instructions to create the executable. Note not all the code base is used here.
-a.out : $(OBJDIR)/main.o $(OBJDIR)/inds.o $(OBJDIR)/inds_stochastic.o $(OBJDIR)/inds_stochastic_migratory.o $(OBJDIR)/thrust_prob_table.o $(OBJDIR)/ConfigFile.o $(OBJDIR)/thrust_prob_table_demes.o $(OBJDIR)/mating_thrust_prob_table_demes.o $(OBJDIR)/environment.o $(OBJDIR)/amplify.o $(OBJDIR)/random_variables_functions.o $(OBJDIR)/reduce_by_key_with_zeroes.o $(OBJDIR)/statistics_class.o $(OBJDIR)/deme_specific_data_class.o $(OBJDIR)/parents_class.o $(OBJDIR)/neonates_class.o $(OBJDIR)/genetic_deme_specific_data.o $(OBJDIR)/one_dim_two_dim.o $(OBJDIR)/remove_duplicate_pairs.o $(OBJDIR)/which_function.o $(OBJDIR)/gather_values_by_deme.o $(OBJDIR)/histogram.o $(OBJDIR)/Sampling_Input.o $(OBJDIR)/species_specific_mate_sampling_rules.o $(OBJDIR)/Sampling_Event.o $(OBJDIR)/Sample_without_Replacement_1Pass.o $(OBJDIR)/Sample_With_Replacement.o $(OBJDIR)/genotype_phenotype_map_parameters.o $(OBJDIR)/genotype_phenotype_map.o $(OBJDIR)/UpdateBehavior.o $(OBJDIR)/demographic_statistics_class.o $(OBJDIR)/Simulation_Class.o $(OBJDIR)/MigrationBehavior.o 
-	nvcc -O3 -lcurand -lrt -lcuda -lconfig++ $(OBJDIR)/main.o $(OBJDIR)/inds.o $(OBJDIR)/inds_stochastic.o $(OBJDIR)/inds_stochastic_migratory.o $(OBJDIR)/thrust_prob_table.o $(OBJDIR)/ConfigFile.o $(OBJDIR)/thrust_prob_table_demes.o $(OBJDIR)/mating_thrust_prob_table_demes.o  $(OBJDIR)/environment.o $(OBJDIR)/amplify.o $(OBJDIR)/random_variables_functions.o $(OBJDIR)/reduce_by_key_with_zeroes.o $(OBJDIR)/statistics_class.o $(OBJDIR)/deme_specific_data_class.o $(OBJDIR)/parents_class.o $(OBJDIR)/neonates_class.o $(OBJDIR)/genetic_deme_specific_data.o $(OBJDIR)/one_dim_two_dim.o $(OBJDIR)/remove_duplicate_pairs.o $(OBJDIR)/which_function.o $(OBJDIR)/gather_values_by_deme.o $(OBJDIR)/histogram.o $(OBJDIR)/Sampling_Input.o $(OBJDIR)/species_specific_mate_sampling_rules.o $(OBJDIR)/Sampling_Event.o $(OBJDIR)/Sample_without_Replacement_1Pass.o $(OBJDIR)/Sample_With_Replacement.o $(OBJDIR)/genotype_phenotype_map_parameters.o $(OBJDIR)/genotype_phenotype_map.o $(OBJDIR)/UpdateBehavior.o $(OBJDIR)/demographic_statistics_class.o $(OBJDIR)/Simulation_Class.o $(OBJDIR)/MigrationBehavior.o 
+a.out : $(OBJDIR)/inds.o $(OBJDIR)/inds_stochastic.o $(OBJDIR)/inds_stochastic_migratory.o $(OBJDIR)/thrust_prob_table.o $(OBJDIR)/thrust_prob_table_demes.o $(OBJDIR)/mating_thrust_prob_table_demes.o $(OBJDIR)/environment.o $(OBJDIR)/amplify.o $(OBJDIR)/random_variables_functions.o $(OBJDIR)/reduce_by_key_with_zeroes.o $(OBJDIR)/statistics_class.o $(OBJDIR)/deme_specific_data_class.o $(OBJDIR)/parents_class.o $(OBJDIR)/neonates_class.o $(OBJDIR)/genetic_deme_specific_data.o $(OBJDIR)/determine_mortality.o $(OBJDIR)/MigrationFunctions.o $(OBJDIR)/one_dim_two_dim.o $(OBJDIR)/remove_duplicate_pairs.o $(OBJDIR)/which_function.o $(OBJDIR)/gather_values_by_deme.o $(OBJDIR)/histogram.o $(OBJDIR)/footimer2.o $(OBJDIR)/Sampling_Input.o $(OBJDIR)/species_specific_mate_sampling_rules.o $(OBJDIR)/Sampling_Event.o $(OBJDIR)/Sample_without_Replacement_1Pass.o $(OBJDIR)/Sample_without_Replacement_Test.o  $(OBJDIR)/Sample_without_Replacement_byDeme.o $(OBJDIR)/Sample_With_Replacement.o $(OBJDIR)/genotype_phenotype_map_parameters.o  $(OBJDIR)/demographic_statistics_class.o $(OBJDIR)/Simulation_Class.o $(OBJDIR)/Shuffle_by_Key.o $(OBJDIR)/gitversion.o
 
 $(OBJDIR):
 	mkdir $(OBJDIR)
 
-# Compilation instructions:
+# Used to record the commit hash used to compile at simulation run time; per: https://stackoverflow.com/a/6526504/1790399
+${SRC}/gitversion.c : .git/HEAD .git/index
+	echo "const char *gitversion = \"$(shell git rev-parse HEAD)\";" > $@
 
-$(OBJDIR)/main.o : main.cpp 
-	nvcc -c $(CFLAGS) ${HEADERS} main.cpp -o $(OBJDIR)/main.o 
+$(OBJDIR)/gitversion.o : ${SRC}/gitversion.c
+	nvcc -c $(CFLAGS) ${HEADERS}  ${SRC}/gitversion.c -o $(OBJDIR)/gitversion.o
 
-$(OBJDIR)/ConfigFile.o : ${SRC}/ConfigFile.cpp
-	nvcc -c $(CFLAGS) ${HEADERS} ${SRC}/ConfigFile.cpp -o $(OBJDIR)/ConfigFile.o
-
-$(OBJDIR)/Simulation_Class.o : ${SRC}/Simulation_Class.cpp
-	nvcc -c $(CFLAGS) ${HEADERS} ${SRC}/Simulation_Class.cpp -o $(OBJDIR)/Simulation_Class.o
-	
-$(OBJDIR)/file_util.o : ${UTIL}/file_util.cpp
-	nvcc -c $(CFLAGS) ${HEADERS}  ${UTIL}/file_util.cpp -o $(OBJDIR)/file_util.o
-
-$(OBJDIR)/UpdateBehavior.o : ${UPDATE}/UpdateBehavior.cu
-	nvcc -c $(CFLAGS) ${HEADERS}  ${UPDATE}/UpdateBehavior.cu -o $(OBJDIR)/UpdateBehavior.o
-
-$(OBJDIR)/MigrationBehavior.o : ${MOVEMENT}/MigrationBehavior.cu
-	nvcc -c $(CFLAGS) ${HEADERS}  ${MOVEMENT}/MigrationBehavior.cu -o $(OBJDIR)/MigrationBehavior.o
-
+$(OBJDIR)/Simulation_Class.o : ${SRC}/Simulation_Class.cu
+	nvcc -c $(CFLAGS) ${HEADERS} ${SRC}/Simulation_Class.cu -o $(OBJDIR)/Simulation_Class.o
+		
 $(OBJDIR)/inds.o : ${SPECIES}/inds.cu
 	nvcc -c $(CFLAGS) ${HEADERS}  ${SPECIES}/inds.cu -o $(OBJDIR)/inds.o
 
@@ -84,6 +67,9 @@ $(OBJDIR)/amplify.o : ${UTIL}/amplify.cu
 $(OBJDIR)/reduce_by_key_with_zeroes.o : ${UTIL}/reduce_by_key_with_zeroes.cu
 	nvcc -c $(CFLAGS) ${HEADERS}  ${UTIL}/reduce_by_key_with_zeroes.cu -o $(OBJDIR)/reduce_by_key_with_zeroes.o
 
+$(OBJDIR)/Shuffle_by_Key.o : ${UTIL}/Shuffle_by_Key.cu
+	nvcc -c $(CFLAGS) ${HEADERS}  ${UTIL}/Shuffle_by_Key.cu -o $(OBJDIR)/Shuffle_by_Key.o
+
 $(OBJDIR)/random_variables_functions.o : ${MATH}/random_variables_functions.cu
 	nvcc -c $(CFLAGS) ${HEADERS}  ${MATH}/random_variables_functions.cu -o $(OBJDIR)/random_variables_functions.o
 
@@ -105,17 +91,26 @@ $(OBJDIR)/neonates_class.o : ${ADD_KIDS}/neonates_class.cu
 $(OBJDIR)/genotype_phenotype_map.o : ${ADD_KIDS}/genotype_phenotype_map.cu
 	nvcc -c $(CFLAGS) ${HEADERS} ${ADD_KIDS}/genotype_phenotype_map.cu -o $(OBJDIR)/genotype_phenotype_map.o
 
+$(OBJDIR)/genotype_phenotype_map_parameters.o : ${ADD_KIDS}/genotype_phenotype_map_parameters.cu
+	nvcc -c $(CFLAGS) ${HEADERS}  ${ADD_KIDS}/genotype_phenotype_map_parameters.cu -o $(OBJDIR)/genotype_phenotype_map_parameters.o
+
 $(OBJDIR)/genetic_deme_specific_data.o : ${ADD_KIDS}/genetic_deme_specific_data.cu
 	nvcc -c $(CFLAGS) ${HEADERS}  ${ADD_KIDS}/genetic_deme_specific_data.cu -o $(OBJDIR)/genetic_deme_specific_data.o
 
-$(OBJDIR)/genotype_phenotype_map_parameters.o : ${ADD_KIDS}/genotype_phenotype_map_parameters.cu
-	nvcc -c $(CFLAGS) ${HEADERS}  ${ADD_KIDS}/genotype_phenotype_map_parameters.cu -o $(OBJDIR)/genotype_phenotype_map_parameters.o
+$(OBJDIR)/prey_fluctuations.o : ${PREY_VARIABLES}/prey_fluctuations.cu
+	nvcc -c $(CFLAGS) ${HEADERS}  ${PREY_VARIABLES}/prey_fluctuations.cu -o $(OBJDIR)/prey_fluctuations.o
 
 $(OBJDIR)/assortative_mating_parents_class.o : ${ADD_KIDS}/assortative_mating_parents_class.cu
 	nvcc -c $(CFLAGS) ${HEADERS} ${ADD_KIDS}/assortative_mating_parents_class.cu -o $(OBJDIR)/assortative_mating_parents_class.o
 
 $(OBJDIR)/assortative_mating_neonates_class.o: ${ADD_KIDS}/assortative_mating_neonates_class.cu
 	nvcc -c $(CFLAGS) ${HEADERS}  ${ADD_KIDS}/assortative_mating_neonates_class.cu -o $(OBJDIR)/assortative_mating_neonates_class.o
+
+$(OBJDIR)/determine_mortality.o: ${UPDATE}/determine_mortality.cu
+	nvcc -c $(CFLAGS) ${HEADERS}  ${UPDATE}/determine_mortality.cu -o $(OBJDIR)/determine_mortality.o
+
+$(OBJDIR)/MigrationFunctions.o: ${MOVEMENT}/MigrationFunctions.cu
+	nvcc -c $(CFLAGS) ${HEADERS}  ${MOVEMENT}/MigrationFunctions.cu -o $(OBJDIR)/MigrationFunctions.o
 
 $(OBJDIR)/one_dim_two_dim.o : ${UTIL}/one_dim_two_dim.cu
 	nvcc -c $(CFLAGS) ${HEADERS}  ${UTIL}/one_dim_two_dim.cu -o $(OBJDIR)/one_dim_two_dim.o
@@ -138,19 +133,19 @@ $(OBJDIR)/Sampling_Event.o : ${UTIL}/Sampling_Event.cu
 $(OBJDIR)/Sample_without_Replacement_1Pass.o : ${UTIL}/Sample_without_Replacement_1Pass.cu
 	nvcc -c $(CFLAGS) ${HEADERS} ${UTIL}/Sample_without_Replacement_1Pass.cu -o $(OBJDIR)/Sample_without_Replacement_1Pass.o
 
+$(OBJDIR)/Sample_without_Replacement_byDeme.o : ${UTIL}/Sample_without_Replacement_byDeme.cu
+	nvcc -c $(CFLAGS) ${HEADERS} ${UTIL}/Sample_without_Replacement_byDeme.cu -o $(OBJDIR)/Sample_without_Replacement_byDeme.o
+
 $(OBJDIR)/Sample_With_Replacement.o : ${UTIL}/Sample_With_Replacement.cu
 	nvcc -c $(CFLAGS) ${HEADERS} ${UTIL}/Sample_With_Replacement.cu -o $(OBJDIR)/Sample_With_Replacement.o
+
+$(OBJDIR)/Sample_without_Replacement_Test.o : ${UTIL}/Sample_without_Replacement_Test.cu
+	nvcc -c $(CFLAGS) ${HEADERS} ${UTIL}/Sample_without_Replacement_Test.cu -o $(OBJDIR)/Sample_without_Replacement_Test.o
 
 $(OBJDIR)/species_specific_mate_sampling_rules.o : ${ADD_KIDS}/species_specific_mate_sampling_rules.cu
 	nvcc -c $(CFLAGS) ${HEADERS} ${ADD_KIDS}/species_specific_mate_sampling_rules.cu -o $(OBJDIR)/species_specific_mate_sampling_rules.o
 
-## Add more compilation instructions for species-specific code, e.g.,
-
-# $(OBJDIR)/mySpecies.o : ${MY_SPECIES}/mySpecies.cu
-#	nvcc  -c $(CFLAGS) ${HEADERS}  ${MY_SPECIES}/mySpecies.cu -o $(OBJDIR)/mySpecies.o
-
-
-# Code related to the clean command.
 .PHONY : all clean
 clean :
 	@rm -rf $(OBJDIR)
+	@rm ${SRC}/gitversion.c

@@ -1,5 +1,7 @@
-#include "inds.h"
-#include "thrust_probabilities.h"
+#include <species/inds.h>
+#include <math/thrust_probabilities.h>
+
+#include <util/rapidcsv/src/rapidcsv.h>
 
 #include <curand.h>
 #include <fstream>
@@ -66,6 +68,76 @@ void inds::initialize_individuals(int nloci, int nphen)
 	phenotype = new thrust::device_vector<float>[nphen];
 	}
 
+void inds::initialize_from_CSV(const char *filename)
+	{
+	rapidcsv::Document csv(filename);
+
+	// Check that MaxSize is satisfied and exit if it isn't. 
+	size = csv.GetRowCount();
+	if (size > maxsize)
+		{
+		std::cerr << "Maximum size must be greater or equal to initial population size!" << std::endl;
+		exit(1);
+		}
+
+	std::vector<int> id_in = csv.GetColumn<int>("Id");
+	thrust::copy(id_in.begin(), id_in.end(), id.begin());
+
+	std::vector<int> status_in = csv.GetColumn<int>("Status");
+	thrust::copy(status_in.begin(), status_in.end(), status.begin());
+
+	std::vector<int> sex_in = csv.GetColumn<int>("Sex");
+	thrust::copy(sex_in.begin(), sex_in.end(), sex.begin());
+
+	std::vector<int> age_in = csv.GetColumn<int>("Age");
+	thrust::copy(age_in.begin(), age_in.end(), age.begin());
+
+	std::vector<int> deme_in = csv.GetColumn<int>("Deme");
+	thrust::copy(deme_in.begin(), deme_in.end(), deme.begin());
+	
+	std::string mgen_in = "mgene";
+	std::string fgen_in = "fgene";
+
+	for (int i=0; i < nloci; i++)
+		{
+		std::stringstream tempm;
+		tempm << mgen_in << i ;
+		std::stringstream tempf;
+		tempf << fgen_in << i ;
+	
+		std::vector<float> mgenotype_in = csv.GetColumn<float>(tempm.str());
+		std::vector<float> fgenotype_in = csv.GetColumn<float>(tempf.str());
+		thrust::copy(mgenotype_in.begin(), mgenotype_in.end(), mgenotype[i].begin());
+		thrust::copy(fgenotype_in.begin(), fgenotype_in.end(), fgenotype[i].begin());
+		}
+
+	std::string phen_in = "phen";
+	for (int i=0; i < nphen; i++)
+		{
+		std::stringstream tempPh;
+		tempPh << phen_in << i;
+	
+		std::vector<float> phenotype_in = csv.GetColumn<float>(tempPh.str());
+		thrust::copy(phenotype_in.begin(), phenotype_in.end(), phenotype[i].begin());
+		}
+
+	// Optionally import parental IDs
+	std::vector<std::string> columnNames = csv.GetColumnNames();
+	bool maternal_ID_exists = (std::find(columnNames.begin(), columnNames.end(), "maternal_ID") != columnNames.end());
+	if (maternal_ID_exists)
+		{
+		std::vector<int> maternal_id_in = csv.GetColumn<int>("maternal_ID");
+		thrust::copy(maternal_id_in.begin(), maternal_id_in.end(), maternal_id.begin());
+		}
+
+	bool paternal_ID_exists = (std::find(columnNames.begin(), columnNames.end(), "paternal_ID") != columnNames.end());
+	if (paternal_ID_exists)
+		{
+		std::vector<int> paternal_id_in = csv.GetColumn<int>("paternal_ID");
+		thrust::copy(paternal_id_in.begin(), paternal_id_in.end(), paternal_id.begin());
+		}
+	}
+
 inds::~inds()
 	{
 	/*
@@ -79,7 +151,16 @@ inds::~inds()
 void inds::exportCsv()
 	{
 	std::ostringstream stream;
-	stream << "species" << species_ID << ".csv";
+	stream << "species_" << species_ID << ".csv";
+	std::string result = stream.str();
+	const char *mySpeciesTitle = result.c_str();
+	exportCsv(mySpeciesTitle);
+	}
+
+void inds::exportCsv(int timestep)
+	{
+	std::ostringstream stream;
+	stream << "species_" << species_ID << "_" << timestep << ".csv";
 	std::string result = stream.str();
 	const char *mySpeciesTitle = result.c_str();
 	exportCsv(mySpeciesTitle);
@@ -148,7 +229,7 @@ void inds::exportCsv(const char *filename, int timestep)
 	//Output headers
 	if ((timestep==0))
 		{
-		file << "Time_step, Index,Id,Status,Sex,Age,Deme,maternal_ID,paternal_ID";
+		file << "Time_step, Index,Id,Status,Sex,Age,Deme,maternal_ID,paternal_ID,";
 		for (int i = 0 ; i < nloci ; i++) {
 			file << "fgene" << i << ",";
 		}
@@ -166,7 +247,7 @@ void inds::exportCsv(const char *filename, int timestep)
 	
 	//Output n individuals
 	for (int i = 0 ; i < size ; i++) {
-		file << timestep << "," << timestep << "," << i << "," << id[i] << "," << status[i] << "," << sex[i] << "," << age[i] << "," << deme[i] << "," << maternal_id[i] << "," << paternal_id[i] << ",";
+		file << timestep << "," << i << "," << id[i] << "," << status[i] << "," << sex[i] << "," << age[i] << "," << deme[i] << "," << maternal_id[i] << "," << paternal_id[i] << ",";
 		for (int j = 0 ; j < nloci ; j++) {
 			file << fgenotype[j][i] << ",";
 		}

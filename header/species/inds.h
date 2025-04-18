@@ -3,9 +3,10 @@
 
 #include <thrust/host_vector.h>
 #include <thrust/device_vector.h>
+#include <thrust/gather.h>
 
-#include "deme_specific_data_class.h"
-#include "environment.h"
+#include <species/deme_specific_data_class.h>
+#include <environ/environment.h>
 
 class inds
 	{
@@ -27,9 +28,11 @@ class inds
 		void removeDead();
 		void setMaxSize(int n);
 		void sortByDeme();
+		virtual void initialize_from_CSV(const char *filename);
 		void initialize_individuals(int nloci_val, int nphen_val);
 		void exportCsv();
 		void exportCsv(const char *filename);
+		void exportCsv(int timestep);
 		void exportCsv(const char *filename, int timestep);
 		void exportCsv(const char *filename, int timestep1, int timestep2);
 

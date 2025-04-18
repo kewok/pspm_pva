@@ -5,12 +5,12 @@
 #include <thrust/host_vector.h>
 #include <thrust/device_vector.h>
 #include <thrust/functional.h>
-#include "inds_stochastic.h"
-#include "reduce_by_key_with_zeroes.h"
-#include "deme_specific_data_class.h"
-#include "amplify.h"
-#include "mating_thrust_prob_table_demes.h"
-#include "random_variables_functions.h"
+#include <species/inds_stochastic.h>
+#include <util/reduce_by_key_with_zeroes.h>
+#include <species/deme_specific_data_class.h>
+#include <util/amplify.h>
+#include <math/mating_thrust_prob_table_demes.h>
+#include <math/random_variables_functions.h>
 
 class EggsNeonates 
 	{
@@ -67,7 +67,7 @@ class EggsNeonates
 
 // make sure there are no more kids than spaces available
 struct adjust_kids_functor
-{
+	{
 	/*
 		Elements in the tuple.
 		----------------------
@@ -90,11 +90,11 @@ struct adjust_kids_functor
 					}
 			}
 		}
-};
+	};
 
 
 struct recombination_functor
-{
+	{
 	float *fgenotype, *mgenotype;
 	float recomb_rate;
 	recombination_functor(float *fgene, float *mgene, float rate) : fgenotype(fgene), mgenotype(mgene), recomb_rate(rate)
@@ -119,11 +119,11 @@ struct recombination_functor
 			}
 		if (thrust::get<2>(t) == 0)
 			thrust::get<3>(t) = fgenotype[parent_index];
-		else
+		if (thrust::get<2>(t) == 1)
 			thrust::get<3>(t) = mgenotype[parent_index];
 
 		float answer = thrust::get<3>(t);
 		}
-};
+	};
 
 #endif

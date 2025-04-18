@@ -1,5 +1,5 @@
-#include "statistics_class.h"
-#include "gather_values_by_deme.h"
+#include <math/statistics_class.h>
+#include <util/gather_values_by_deme.h>
 
 Statistics::Statistics(int num_demes)
 	{
@@ -112,6 +112,7 @@ void Statistics::calculate_min_max_phenotypes_by_deme(inds *individuals, int PHE
 			max_phenotypes[i] = 0;
 			min_phenotypes[i] = 0;
 			}
+		cumulative_deme_sizes += individuals->deme_sizes[i];
 		}
 	}
 
@@ -163,7 +164,9 @@ void Statistics::output_histogram(int number_of_bins)
 	for (int i=0; i < number_of_demes; i++)
 		{
 		for (int j=0; j < number_of_bins; j++)
+			{
 			histogram_file << histogram_by_deme[i][j] << " ";
+			}
 		}
 	histogram_file << std::endl;
 	}

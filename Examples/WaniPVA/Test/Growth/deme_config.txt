@@ -1,0 +1,215 @@
+number_of_demes = 2 
+species_data = (
+	{#species0
+		number_of_parameters = 28 
+		number_of_species_specific_values = 8 
+		species_specific_values_names = ["mate_sampling_scheme","mating_scheme","FECUNDITY_PHENOTYPE","MORTALITY_PHENOTYPE","INBREEDING_PHENOTYPE","IRREVERSIBLE_MASS_PHENOTYPE","REVERSIBLE_MASS_PHENOTYPE","EGGSIZE_PHENOTYPE"]
+
+		parameter_names = ["ontogenetic_niche_shift_constant","ontogenetic_niche_shift_coefficient","piscivory_probability","length_weight_conversion_coefficient","length_weight_conversion_exponent","handling_time","F_sizes_at_maturity","M_sizes_at_maturity","M_reproductive_advantage","F_reproductive_advantage","conversion_efficiency","proportion_prey_variance","proportion_adult_resources_variance","satiation_noise","functional_response_numerator","allometric_metabolic_coefficient","allometric_metabolic_exponent","allometric_maximum_consumption_coefficient","allometric_maximum_consumption_exponent","juvenile_maximum_condition","mature_maximum_condition","egg_survivorship","effect_of_starvation","size_dependent_mortality_constant","size_dependent_mortality_coefficient","cannibalism_constant","nest_ceiling","mean_number_of_others_sampled"]
+
+		 mate_sampling_scheme  =  1.000000 
+		 mating_scheme  =  0.000000 
+		 FECUNDITY_PHENOTYPE  =  0.000000 
+		 MORTALITY_PHENOTYPE  =  1.000000 
+		 INBREEDING_PHENOTYPE  =  2.000000 
+		 IRREVERSIBLE_MASS_PHENOTYPE  =  3.000000 
+		 REVERSIBLE_MASS_PHENOTYPE  =  4.000000 
+		 EGGSIZE_PHENOTYPE  =  5.000000 
+
+	demes_specifications = (
+		{#deme0
+		 ontogenetic_niche_shift_constant =  4.480000 
+		 ontogenetic_niche_shift_coefficient =  -0.073000 
+		 piscivory_probability =  0.750000 
+		 length_weight_conversion_coefficient =  0.153000 
+		 length_weight_conversion_exponent =  0.330000 
+		 handling_time =  0.679000 
+		 F_sizes_at_maturity =  5832.000000 
+		 M_sizes_at_maturity =  9664.000000 
+		 M_reproductive_advantage =  2.000000 
+		 F_reproductive_advantage =  2.000000 
+		 conversion_efficiency =  0.500000 
+		 proportion_prey_variance =  0.000000 
+		 proportion_adult_resources_variance =  0.000000 
+		 satiation_noise =  0.000000 
+		 functional_response_numerator =  14.070000 
+		 allometric_metabolic_coefficient =  0.087300 
+		 allometric_metabolic_exponent =  0.750000 
+		 allometric_maximum_consumption_coefficient =  0.423000 
+		 allometric_maximum_consumption_exponent =  0.606000 
+		 juvenile_maximum_condition =  2.000000 
+		 mature_maximum_condition =  2.430000 
+		 egg_survivorship =  0.100000 
+		 effect_of_starvation =  7.000000 
+		 size_dependent_mortality_constant =  4.960000 
+		 size_dependent_mortality_coefficient =  -0.210000 
+		 cannibalism_constant =  0.000000 
+		 nest_ceiling =  1000.000000 
+		 mean_number_of_others_sampled =  10.000000 
+		},
+
+		{#deme1
+		 ontogenetic_niche_shift_constant =  4.480000 
+		 ontogenetic_niche_shift_coefficient =  -0.073000 
+		 piscivory_probability =  0.750000 
+		 length_weight_conversion_coefficient =  0.153000 
+		 length_weight_conversion_exponent =  0.330000 
+		 handling_time =  0.679000 
+		 F_sizes_at_maturity =  5832.000000 
+		 M_sizes_at_maturity =  9664.000000 
+		 M_reproductive_advantage =  2.000000 
+		 F_reproductive_advantage =  2.000000 
+		 conversion_efficiency =  0.500000 
+		 proportion_prey_variance =  0.000000 
+		 proportion_adult_resources_variance =  0.000000 
+		 satiation_noise =  0.000000 
+		 functional_response_numerator =  14.070000 
+		 allometric_metabolic_coefficient =  0.087300 
+		 allometric_metabolic_exponent =  0.750000 
+		 allometric_maximum_consumption_coefficient =  0.423000 
+		 allometric_maximum_consumption_exponent =  0.606000 
+		 juvenile_maximum_condition =  2.000000 
+		 mature_maximum_condition =  2.430000 
+		 egg_survivorship =  0.100000 
+		 effect_of_starvation =  7.000000 
+		 size_dependent_mortality_constant =  4.960000 
+		 size_dependent_mortality_coefficient =  -0.210000 
+		 cannibalism_constant =  0.000000 
+		 nest_ceiling =  20.000000 
+		 mean_number_of_others_sampled =  10.000000 
+		}
+	)
+	}
+
+	)
+
+
+
+###########################
+#
+#
+#Genetics stuff
+#
+#
+############################
+species_genetics = (
+	{#species0
+ 	number_of_loci = 2 
+ 	number_of_phenotypes = 6 
+  		phenotype_names = [ "FECUNDITY_PHENOTYPE", "MORTALITY_PHENOTYPE", "INBREEDING_PHENOTYPE", "IRREVERSIBLE_MASS_PHENOTYPE", "REVERSIBLE_MASS_PHENOTYPE", "EGGSIZE_PHENOTYPE" ]
+
+  		recombination_rates = [ 0.5, 0.5 ]
+
+  		loci_names = [ "locus1", "locus2" ]
+
+ locus_specifications = (
+ 	{#locus0
+ 	mutation_parameters = (
+ 		{#deme0
+		 MUTATION_RATE =  0.000010 
+		 MUTATION_MAGNITUDE =  0.100000 
+		},
+
+		{#deme1
+		 MUTATION_RATE =  0.000010 
+		 MUTATION_MAGNITUDE =  0.100000 
+		}
+ 		)
+ 	},
+ 	{#locus1
+ 	mutation_parameters = (
+ 		{#deme0
+		 MUTATION_RATE =  0.000010 
+		 MUTATION_MAGNITUDE =  0.100000 
+		},
+
+		{#deme1
+		 MUTATION_RATE =  0.000010 
+		 MUTATION_MAGNITUDE =  0.100000 
+		}
+ 		)
+ 	}
+ 	)
+ 	phenotype_specifications = (
+ 		{#phenotype0
+ 		number_of_genotype_phenotype_map_parameters = 0 
+ 		},
+ 		{#phenotype1
+ 		number_of_genotype_phenotype_map_parameters = 0 
+ 		},
+ 		{#phenotype2
+ 		number_of_genotype_phenotype_map_parameters = 1 
+ 		names_of_genotype_phenotype_map_parameters = [ 
+		 "INBREEDING_LEVEL" 
+		 ]
+
+ 
+		 		genotype_phenotype_map_parameters=(
+ 		{#deme0
+		 INBREEDING_LEVEL =  1.000000 
+		},
+
+		{#deme1
+		 INBREEDING_LEVEL =  1.000000 
+		}
+ 		)
+
+ 		},
+ 		{#phenotype3
+ 		number_of_genotype_phenotype_map_parameters = 1 
+ 		names_of_genotype_phenotype_map_parameters = [ 
+		 "IRREVERSIBLE_MASS_AT_BIRTH_CONSTANT" 
+		 ]
+
+ 
+		 		genotype_phenotype_map_parameters=(
+ 		{#deme0
+		 IRREVERSIBLE_MASS_AT_BIRTH_CONSTANT =  38.200000 
+		},
+
+		{#deme1
+		 IRREVERSIBLE_MASS_AT_BIRTH_CONSTANT =  38.200000 
+		}
+ 		)
+
+ 		},
+ 		{#phenotype4
+ 		number_of_genotype_phenotype_map_parameters = 1 
+ 		names_of_genotype_phenotype_map_parameters = [ 
+		 "REVERSIBLE_MASS_AT_BIRTH_CONSTANT" 
+		 ]
+
+ 
+		 		genotype_phenotype_map_parameters=(
+ 		{#deme0
+		 REVERSIBLE_MASS_AT_BIRTH_CONSTANT =  76.400000 
+		},
+
+		{#deme1
+		 REVERSIBLE_MASS_AT_BIRTH_CONSTANT =  76.400000 
+		}
+ 		)
+
+ 		},
+ 		{#phenotype5
+ 		number_of_genotype_phenotype_map_parameters = 1 
+ 		names_of_genotype_phenotype_map_parameters = [ 
+		 "EGGSIZE_CONSTANT" 
+		 ]
+
+ 
+		 		genotype_phenotype_map_parameters=(
+ 		{#deme0
+		 EGGSIZE_CONSTANT =  114.600000 
+		},
+
+		{#deme1
+		 EGGSIZE_CONSTANT =  114.600000 
+		}
+ 		)
+
+ 		}
+ 		)
+ 	}
+
+ 	)

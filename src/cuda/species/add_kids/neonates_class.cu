@@ -1,4 +1,4 @@
-#include "neonates_class.h"
+#include <species/add_kids/neonates_class.h>
 
 /* One problem with a separate neonates class is that all this stuff has to get copied back into example species. Performance cost seems minimal but more extensive profiling seems warranted. */
 
@@ -85,6 +85,7 @@ void EggsNeonates::get_maternally_derived_genotype(thrust::device_vector<float> 
 	at.adjust_randoms(rand.begin(), rand.end(), kids_deme.begin(), kids_deme.end());
 
 	at.draw(rand.begin(), rand.end(), mother_index.begin());
+	thrust::copy(mother_index.begin(), mother_index.end(), species->maternal_id.begin() + previous_pop_size);
 
 //Initialize parity to zeroes
 //Parity vector is used to keep track of where the recombination is happening.
@@ -126,6 +127,7 @@ void EggsNeonates::get_paternally_derived_genotype(thrust::device_vector<float> 
 	at.adjust_randoms(rand.begin(), rand.end(), kids_deme.begin(), kids_deme.end());
 
 	at.draw(rand.begin(), rand.end(),father_index.begin());
+	thrust::copy(father_index.begin(), father_index.end(), species->paternal_id.begin() + previous_pop_size);
 
 	//Reset parity to zeroes
 	thrust::fill(parity.begin(), parity.end(), 0);

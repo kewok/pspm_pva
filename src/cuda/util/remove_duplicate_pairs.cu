@@ -1,9 +1,11 @@
-#include "remove_duplicate_pairs.h"
+#include <util/remove_duplicate_pairs.h>
 
 #include <thrust/copy.h>
 #include <thrust/sort.h>
 #include <thrust/unique.h>
 #include <thrust/host_vector.h>
+
+// This code is inspired by: https://stackoverflow.com/questions/5521091/thrust-removing-duplicates-in-key-value-arrays
 
 void remove_duplicate_pairs(thrust::device_vector<int> &vectorA, 
 			    thrust::device_vector<int> &vectorB )
