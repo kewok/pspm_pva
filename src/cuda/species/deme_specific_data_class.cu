@@ -1,4 +1,4 @@
-#include "deme_specific_data_class.h"
+#include <species/deme_specific_data_class.h>
 
 DemeSettings::DemeSettings(const char *filename, int species_ID)
 	{
@@ -29,7 +29,10 @@ void DemeSettings::read_in_parameters(const char *filename, int species_ID)
 		{
 		std::cerr << "No deme config file." << std::endl;
 		}
-	
+	catch(const ParseException &pex)
+		{
+		std::cerr << "Your " << pex.getFile() << " file is incorrectly specified. Make sure you check on or about line: " << pex.getLine() << " - " << pex.getError() << std::endl;
+		}
 	try
 		{
 		Number_of_Demes = cfg.lookup("number_of_demes");
@@ -99,28 +102,32 @@ void DemeSettings::read_in_parameters(const char *filename, int species_ID)
 		{
 		float val = 0;
 		species_specification[species_ID].lookupValue(species_specific_values_names[i], val);
-		species_specification[species_ID].lookupValue(species_specific_values_names[i], val);
 		species_specific_values[species_specific_values_names[i]] = val;
 		}
 
-	const Setting &deme_specifications = species_specification[species_ID]["demes_specifications"];
-
-	Number_of_Demes = deme_specifications.getLength();
-	
-	deme_wide_parameters = new thrust::device_vector<float>[Number_of_Parameters];
-	
-	for (int i=0; i < Number_of_Parameters; i++)
-		deme_wide_parameters[i].resize(Number_of_Demes);
-
-	for (int i=0; i < parameter_names.size(); i++)
+	if (species_specification[species_ID].exists("demes_specifications"))
 		{
-		for (int j=0; j < Number_of_Demes; j++)
+		const Setting &deme_specifications = species_specification[species_ID]["demes_specifications"];
+	
+		deme_wide_parameters = new thrust::device_vector<float>[Number_of_Parameters];
+
+		for (int i=0; i < Number_of_Parameters; i++)
+			deme_wide_parameters[i].resize(Number_of_Demes);
+
+		for (int i=0; i < parameter_names.size(); i++)
 			{
-			const Setting &deme_values = deme_specifications[j];
-			float val = 0;
-			deme_values.lookupValue(parameter_names[i], val);
-			deme_wide_parameters[i][j] = val;
+			for (int j=0; j < Number_of_Demes; j++)
+				{
+				const Setting &deme_values = deme_specifications[j];
+				float val = 0;
+				deme_values.lookupValue(parameter_names[i], val);
+				deme_wide_parameters[i][j] = val;
+				}
 			}
+		}
+	else
+		{
+		std::cerr << "Warning: No 'deme_specifications' setting in configuration file." << std::endl;
 		}
 	}
 

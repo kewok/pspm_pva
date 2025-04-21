@@ -26,8 +26,8 @@
 #include <thrust/set_operations.h>
 #include <thrust/extrema.h>
 
-#include "thrust_functors.h"
-#include "thrust_probabilities.h"
+#include <util/thrust_functors.h>
+#include <math/thrust_probabilities.h>
 
 
 void calculate_histogram(thrust::device_vector<int> &data, thrust::device_vector<int> &counts, 		 int counts_size);
@@ -39,7 +39,7 @@ void calculate_histogram_subset(thrust::device_vector<int> &data, thrust::device
 
 // convert values to fall inside bin groups
 struct adjust_histogram_data_values
-{
+	{
 	/* 
 		Elements in the tuple.
 		----------------------
@@ -54,9 +54,9 @@ struct adjust_histogram_data_values
 	void operator()(tuple t) {
 		thrust::get<4>(t) = thrust::get<0>(t) - thrust::get<1>(t);
 		thrust::get<4>(t) = thrust::get<4>(t)/(thrust::get<2>(t) - thrust::get<1>(t));
-		thrust::get<4>(t) *= (float) thrust::get<3>(t); 
+		thrust::get<4>(t) *= (float) (thrust::get<3>(t) - 1);
 		}
 	
-};
+	};
 
 #endif

@@ -1,7 +1,7 @@
 #ifndef THRUST_PROB_TABLE_DEMES_H
 #define THRUST_PROB_TABLE_DEMES_H
 
-#include "thrust_prob_table.h"
+#include <math/thrust_prob_table.h>
 
 class ThrustProbTable_demes : public ThrustProbTable
 	{
@@ -14,7 +14,13 @@ class ThrustProbTable_demes : public ThrustProbTable
 		thrust::device_vector<int>::iterator deme_offsets_begin, thrust::device_vector<int>::iterator deme_offsets_end,
 		thrust::device_vector<int>::iterator inds_deme_begin, thrust::device_vector<int>::iterator inds_deme_end);
 
+		void adjust_randoms(thrust::device_vector<double>::iterator uniform_begin, thrust::device_vector<double>::iterator uniform_end,
+		thrust::device_vector<int>::iterator deme_offsets_begin, thrust::device_vector<int>::iterator deme_offsets_end,
+		thrust::device_vector<int>::iterator inds_deme_begin, thrust::device_vector<int>::iterator inds_deme_end);
+
+
 		void adjust_randoms_fixed_offsets(thrust::device_vector<float>::iterator uniform_begin, thrust::device_vector<float>::iterator uniform_end, thrust::device_vector<int>::iterator inds_deme_begin, thrust::device_vector<int>::iterator inds_deme_end);
+		void adjust_randoms_fixed_offsets(thrust::device_vector<double>::iterator uniform_begin, thrust::device_vector<double>::iterator uniform_end, thrust::device_vector<int>::iterator inds_deme_begin, thrust::device_vector<int>::iterator inds_deme_end);
 	};
 
 #endif

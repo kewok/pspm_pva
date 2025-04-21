@@ -3,9 +3,7 @@
 
 #include <iostream>
 #include <stdio.h>
-#include <thrust/host_vector.h>
-
-#include "sampling_input.h"
+#include <util/sampling_input.h>
 
 
 class SamplingEvent
