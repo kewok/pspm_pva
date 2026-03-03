@@ -137,7 +137,7 @@ struct grand_consumption_functor
 		3: proportion of adult resource consumed (currently dummy variable)
 		4: sex
 		5: status
-		6: piscivory occurs (1 or 0)
+		6: piscivory fraction
 		7: resource 1 consumed
 		8: resource 2 consumed
 		9: resource 3 consumed

@@ -1,3 +1,6 @@
+library(pdftools)
+library(magick)
+
 sig_inv_to_fish <- function(inv_val)
   {
   index <- which(sigInv==inv_val)	
@@ -58,12 +61,16 @@ cor4 <- which(U[,'nest_change']==nest_change[3] & U[,'temp_change']==temp_change
 pdf('Fig6.pdf')
 par(mfrow=c(2,2),las=1,cex.axis=1.25,cex.lab=1.25,oma=c(0,6,1.5,0),mar=c(5, 5.75, 4, 1)-0.5)
 image(z=matrix(persist_time[cor1],ncol=length(sigFish)),xlab='',ylab='Scaled instability in\nresource recruitment',main='(A)',col=tim.colors(64))
+text(x=0.25,y=0.2,labels='No\nExtinctions',cex=1.5)
 title(xlab='Scaled reduction in resource\n carrying capacity',line=3.5)
 image(z=matrix(persist_time[cor2],ncol=length(sigFish)),xlab='',ylab='Scaled instability in\nresource recruitment',main='(B)',col=tim.colors(64))
+text(x=0.25,y=0.2,labels='No\nExtinctions',cex=1.5)
 title(xlab='Scaled reduction in resource\n carrying capacity',line=3.5)
 image(z=matrix(persist_time[cor3],ncol=length(sigFish)),xlab='',ylab='Scaled instability in\nresource recruitment',main='(C)',col=tim.colors(64))
+text(x=0.25,y=0.2,labels='No\nExtinctions',cex=1.5)
 title(xlab='Scaled reduction in resource\n carrying capacity',line=3.5)
 image(z=matrix(persist_time[cor4],ncol=length(sigFish)),xlab='',ylab='Scaled instability in\nresource recruitment',main='(D)',col=tim.colors(64))
+text(x=0.25,y=0.2,labels='No\nExtinctions',cex=1.5)
 title(xlab='Scaled reduction in resource\n carrying capacity',line=3.5)
 
 mtext('10% Nest site loss',side=3,outer=T,line=-1,at=0.3,cex=1.2)
@@ -77,18 +84,31 @@ pdf(file='Fig6_legend.pdf',width=8,height=2)
 image.plot(z=matrix(persist_time),legend.only=T, col=tim.colors(64),horizontal=TRUE,legend.lab="Average years to extinction", axis.args=list(at=round(seq(min(persist_time,na.rm=T),max(persist_time,na.rm=T),length=5),digits=2)),legend.width=2,legend.mar=5,legend.cex=1.3,cex.lab=1.1,legend.shrink=1.0)
 dev.off()
 
+fig6 <- image_read_pdf("Fig6.pdf", density = 300)
+legend <- image_read_pdf("Fig6_legend.pdf", density = 300)
+
+# Stack vertically
+combined <- image_append(c(fig6, legend), stack = TRUE)
+
+# Save as PDF
+image_write(combined, "Fig6_combined.pdf", format = "pdf")
+
 sd_persist_time <- apply(times2ext,2,sd)
 sd_persist_time <- ifelse(extinction_prob==0,NA,sd_persist_time)
 
 pdf('Fig7.pdf')
 par(mfrow=c(2,2),las=1,cex.axis=1.25,cex.lab=1.25,oma=c(0,6,1.5,0),mar=c(5, 5.75, 4, 1)-0.5)
 image(z=matrix(sd_persist_time[cor1],ncol=length(sigFish)),xlab='',ylab='Scaled instability in\nresource recruitment',main='(A)',col=tim.colors(64))
+text(x=0.25,y=0.2,labels='No\nExtinctions',cex=1.5)
 title(xlab='Scaled reduction in resource\n carrying capacity',line=3.5)
 image(z=matrix(sd_persist_time[cor2],ncol=length(sigFish)),xlab='',ylab='Scaled instability in\nresource recruitment',main='(B)',col=tim.colors(64))
+text(x=0.25,y=0.2,labels='No\nExtinctions',cex=1.5)
 title(xlab='Scaled reduction in resource\n carrying capacity',line=3.5)
 image(z=matrix(sd_persist_time[cor3],ncol=length(sigFish)),xlab='',ylab='Scaled instability in\nresource recruitment',main='(C)',col=tim.colors(64))
+text(x=0.25,y=0.2,labels='No\nExtinctions',cex=1.5)
 title(xlab='Scaled reduction in resource\n carrying capacity',line=3.5)
 image(z=matrix(sd_persist_time[cor4],ncol=length(sigFish)),xlab='',ylab='Scaled instability in\nresource recruitment',main='(D)',col=tim.colors(64))
+text(x=0.25,y=0.2,labels='No\nExtinctions',cex=1.5)
 title(xlab='Scaled reduction in resource\n carrying capacity',line=3.5)
 
 mtext('10% Nest site loss',side=3,outer=T,line=-1,at=0.3,cex=1.2)
@@ -101,6 +121,15 @@ dev.off()
 pdf(file='Fig7_legend.pdf',width=8,height=2)
 image.plot(z=matrix(sd_persist_time),legend.only=T, col=tim.colors(64),horizontal=TRUE,legend.lab="Standard error of years to extinction", axis.args=list(at=round(seq(min(sd_persist_time,na.rm=T),max(sd_persist_time,na.rm=T),length=5),digits=2)),legend.width=2,legend.mar=5,legend.cex=1.3,cex.lab=1.1,legend.shrink=1.0)
 dev.off()
+
+fig7 <- image_read_pdf("Fig7.pdf", density = 300)
+legend <- image_read_pdf("Fig7_legend.pdf", density = 300)
+
+# Stack vertically
+combined <- image_append(c(fig7, legend), stack = TRUE)
+
+# Save as PDF
+image_write(combined, "Fig7_combined.pdf", format = "pdf")
 
 fraction_zeros <- function(x) length(x[x==0])/length(x)
 extinction_prob <- apply(ending_pops,2,fraction_zeros)

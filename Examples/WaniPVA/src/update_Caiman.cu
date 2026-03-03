@@ -8,11 +8,8 @@ void update_Caiman::update()
 	float *resource_3 = raw_pointer_cast(&(habitat->biotic_variables[2][0]));
 
 	/* Determine if individuals will eat fish */
-	thrust::device_vector<int> piscivory(size);
-	thrust::device_vector<float> piscivory_probabilities(size);
-	thrust::gather(species->deme.begin(), species->deme.begin() + size, species->demeParameters->get_vector_ptr("piscivory_probability"), piscivory_probabilities.begin());
-
-	draw_bernoulli_different_parameters(size, piscivory_probabilities, piscivory, species->gen);
+	thrust::device_vector<float> piscivory(size);
+	thrust::gather(species->deme.begin(), species->deme.begin() + size, species->demeParameters->get_vector_ptr("piscivory_probability"), piscivory.begin());
 
 	grand_consumption_functor eat_N_grow(consumption_allometric_scalar, consumption_allometric_exponent, metabolism_allometric_scalar, metabolism_allometric_exponent, ontogenetic_niche_shift_constant, ontogenetic_niche_shift_coefficient, resource_1, resource_1_maximum, resource_2, resource_2_maximum, resource_3,  resource_3_maximum, handling_time,  functional_response_scalar, mature_maximum_condition, juvenile_maximum_condition, M_sizes_at_maturity, F_sizes_at_maturity);
 

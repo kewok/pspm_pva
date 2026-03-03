@@ -25,5 +25,5 @@ create_species_genetics <- function(species_number, phenotype_names, loci_names,
 	ans <- c(ans, specify_loci_properties(loci_properties))
 
 	ans <- c(ans, specify_genotype_phenotype_map(genotype_phenotype_map), "\t}\n\n")
-	return(paste(ans,collaps=""))
+	return(paste(ans,collapse=""))
 	}
