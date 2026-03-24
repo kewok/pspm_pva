@@ -3,6 +3,12 @@ source('sim_config.R')
 setwd('..')
 
 # Perform the following for a given scenario analyzed, modifying the random number seed as needed
+if (dir.exists('Results')) {
+  print('Results OK')
+} else {
+system('mkdir Results')
+}
+
 setwd('Results')
 for (i in 1:100)
 	{
