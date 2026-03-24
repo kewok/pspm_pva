@@ -23,8 +23,8 @@ $(OBJDIR):
 
 # Compilation instructions:
 
-$(OBJDIR)/main.o : main.cpp 
-	nvcc -c $(CFLAGS) ${HEADERS} main.cpp -o $(OBJDIR)/main.o
+$(OBJDIR)/main.o : main.cu
+	nvcc -c $(CFLAGS) ${HEADERS} main.cu -o $(OBJDIR)/main.o
 
 $(OBJDIR)/UpdateBehavior.o : ${SRC}/UpdateBehavior.cu
 	nvcc -c $(CFLAGS) ${HEADERS}  ${SRC}/UpdateBehavior.cu -o $(OBJDIR)/UpdateBehavior.o
