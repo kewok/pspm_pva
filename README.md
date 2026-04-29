@@ -6,4 +6,4 @@ R scripts to generate the configuration files for the scenarios analysed in the 
 
 
 ## License
-This code is released under the terms of the GNU Public License v3.0. Please refer to the LICENSE file. © Kenichi Okamoto and Virakbott Ong, 2025
+This code is released under the terms of the GNU Public License v3.0. Please refer to the LICENSE file.
